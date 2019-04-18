@@ -35,10 +35,41 @@ VOLUME [ "/home/coder/project" ]
 # get code-server binary from built docker 
 COPY --from=base /usr/local/bin/code-server /usr/local/bin/code-server
 
+# go tools for go extension
+RUN mkdir -p /home/coder/.goTools
+ENV GOPATH /home/coder/.goTools
+RUN go get -u -v github.com/ramya-rao-a/go-outline \
+	github.com/acroca/go-symbols \
+	github.com/mdempsky/gocode \
+	github.com/rogpeppe/godef \
+	golang.org/x/tools/cmd/godoc \
+	github.com/zmb3/gogetdoc \
+	golang.org/x/lint/golint \
+	github.com/fatih/gomodifytags \
+	golang.org/x/tools/cmd/gorename \
+	sourcegraph.com/sqs/goreturns \
+	golang.org/x/tools/cmd/goimports \
+	github.com/cweill/gotests/... \
+	golang.org/x/tools/cmd/guru \
+	github.com/josharian/impl \
+	github.com/haya14busa/goplay/cmd/goplay \
+	github.com/uudashr/gopkgs/cmd/gopkgs \
+	github.com/davidrjenni/reftools/cmd/fillstruct \
+	github.com/tylerb/gotype-live \
+	golang.org/x/tools/cmd/gopls \
+	github.com/alecthomas/gometalinter \
+	github.com/go-delve/delve/cmd/dlv \
+	&& $GOPATH/bin/gometalinter --install
+
+# Preconfigured settings for go extension
+RUN mkdir -p /home/coder/.local/share/code-server/User && chmod g+rw /home/coder/.local/share/code-server/User
+COPY ./go-resources/user-settings.json /home/coder/.local/share/code-server/User/settings.json
+
+# instal go extension
+RUN code-server --install-extension ms-vscode.go
+
 ENV GOPATH /home/coder/project
 ENV PATH $GOPATH/bin:$PATH
-
-
 
 EXPOSE 8443
 
