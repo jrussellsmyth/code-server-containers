@@ -14,3 +14,18 @@ eamodio.gitlens-9.5.1
 esbenp.prettier-vscode-1.8.1
 humao.rest-client-0.21.2
 mgmcdermott.vscode-language-babel-0.0.21
+
+# wip - ideas for improvement
+# genericise the dockers, put commands in a json file?
+
+```json
+{
+    "commands":[
+        "apt-get install bla",
+        "echo 'done'",
+        "another command
+    ]
+}
+```
+`jq -r < testfile .commands[] |while read -r line ;do eval $line;done`
+
