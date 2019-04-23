@@ -1,12 +1,12 @@
 # ============================================================================================
-# GOLANG development environment based on the dockerhub base golang containers
+# Java/Maven development environment based on the dockerhub base maven containers
 # ============================================================================================
 # BUILD WITH 
-# docker build -f go.Dockerfile --build-arg GO_VERSION={version} .
+# docker build -f java.Dockerfile --build-arg JAVA_VERSION={7|8|11|12|13} .
 # last successfull build `docker build -t jrussellsmyth/code-server-go -f go.Dockerfile --build-arg GO_VERSION=1.11 .`
 # ============================================================================================
-ARG GO_VERSION=latest
-FROM golang:${GO_VERSION}
+ARG JAVA_VERSION=8
+FROM maven:3-jdk-${JAVA_VERSION}
 
 RUN apt-get update && apt-get upgrade && apt-get install -y \
 	net-tools \
@@ -47,42 +47,10 @@ VOLUME [ "/home/coder/project" ]
 
 
 # language specific configuration
-# Temporarily set gopath for tools install
-ENV GOPATH /home/coder/.goTools
-RUN mkdir -p /home/coder/.goTools \
-	&& go get -u -v github.com/ramya-rao-a/go-outline \
-	github.com/acroca/go-symbols \
-	github.com/mdempsky/gocode \
-	github.com/rogpeppe/godef \
-	golang.org/x/tools/cmd/godoc \
-	github.com/zmb3/gogetdoc \
-	golang.org/x/lint/golint \
-	github.com/fatih/gomodifytags \
-	golang.org/x/tools/cmd/gorename \
-	sourcegraph.com/sqs/goreturns \
-	golang.org/x/tools/cmd/goimports \
-	github.com/cweill/gotests/... \
-	golang.org/x/tools/cmd/guru \
-	github.com/josharian/impl \
-	github.com/haya14busa/goplay/cmd/goplay \
-	github.com/uudashr/gopkgs/cmd/gopkgs \
-	github.com/davidrjenni/reftools/cmd/fillstruct \
-	github.com/tylerb/gotype-live \
-	golang.org/x/tools/cmd/gopls \
-	github.com/alecthomas/gometalinter \
-	github.com/go-delve/delve/cmd/dlv \
-	&& $GOPATH/bin/gometalinter --install
-
-# Set gopath for development
-ENV GOPATH /home/coder/project
-ENV PATH $GOPATH/bin:$PATH
-
-# Preconfigured settings for go extension
-RUN mkdir -p /home/coder/.local/share/code-server/User && chmod g+rw /home/coder/.local/share/code-server/User
-COPY ./go-resources/user-settings.json /home/coder/.local/share/code-server/User/settings.json
 
 # language specific extensions extensions
-RUN code-server --install-extension ms-vscode.go
+RUN code-server --install-extension vscjava.vscode-java-pack \
+  && code-server --install-extension redhat.vscode-xml
 
 # code server default port
 EXPOSE 8443

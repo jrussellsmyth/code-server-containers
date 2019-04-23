@@ -7,8 +7,7 @@ docker run -d -t -p 127.0.0.1:8444:8443 -v "/Users/jrussell/code:/root/project" 
 
 # for debuggers to work, need to remove some seccomp restrictions - for now, removing all.
 # for go project, mount go workspace to /home/coder/project
-docker run -d --security-opt seccomp=unconfined -p 127.0.0.1:8443:8443 -v "${PWD}:/home/coder/project" --name go-ide jrussellsmyth/code-server-go --allow-http --no-auth
-
+run -d --security-opt seccomp=unconfined -p 127.0.0.1:8443:8443 -v "${PWD}:/home/coder/project" -v /var/run/docker.sock:/var/run/docker.sock  --name go-ide jrussellsmyth/code-server-go --allow-http --no-auth
 
 # extensions for js.. [WIP]
 eamodio.gitlens-9.5.1
