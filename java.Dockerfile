@@ -2,25 +2,25 @@
 # Java/Maven development environment based on the dockerhub base maven containers
 # ============================================================================================
 # BUILD WITH 
-# docker build -f java.Dockerfile --build-arg JAVA_VERSION={7|8|11|12|13} .
-# last successfull build `docker build -t jrussellsmyth/code-server-go -f go.Dockerfile --build-arg GO_VERSION=1.11 .`
+# docker build [-t {tag}] -f java.Dockerfile --build-arg JAVA_VERSION={7|8|11|12|13} .
 # ============================================================================================
 ARG JAVA_VERSION=8
 FROM maven:3-jdk-${JAVA_VERSION}
 
-RUN apt-get update && apt-get upgrade && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	net-tools \
 	sudo \
 	dumb-init \
 	vim 
 
 # docker and docker dependencies - we will need these if we want to build docker containers
-RUN sudo apt-get install -y \
+RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg2 \
     software-properties-common 
+
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - 
 RUN sudo add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" 
 RUN sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io 

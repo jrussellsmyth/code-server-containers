@@ -8,7 +8,7 @@
 ARG GO_VERSION=latest
 FROM golang:${GO_VERSION}
 
-RUN apt-get update && apt-get upgrade && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	net-tools \
 	sudo \
 	dumb-init \

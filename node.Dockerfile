@@ -7,7 +7,7 @@
 ARG NODE_VERSION=latest
 FROM node:${NODE_VERSION}
 
-RUN apt-get update && apt-get upgrade && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	net-tools \
 	sudo \
 	dumb-init \
