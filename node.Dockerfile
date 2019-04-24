@@ -11,15 +11,17 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	net-tools \
 	sudo \
 	dumb-init \
-	vim 
+	vim \
+    bsdtar
 
 # docker and docker dependencies - we will need these if we want to build docker containers
-RUN sudo apt-get install -y \
+RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg2 \
     software-properties-common 
+
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - 
 RUN sudo add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" 
 RUN sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io 
@@ -27,6 +29,9 @@ RUN sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli conta
 # Get the code-server binary 
 ARG CODE_SERVER_VERSION=1.939-vsc1.33.1
 RUN curl -L https://github.com/codercom/code-server/releases/download/${CODE_SERVER_VERSION}/code-server${CODE_SERVER_VERSION}-linux-x64.tar.gz | tar xzv  -f - --strip-components=1 -C /usr/local/bin/ "code-server${CODE_SERVER_VERSION}-linux-x64/code-server"
+
+COPY ./base-resources/install-marketplace-extension /usr/local/bin/install-marketplace-extension
+RUN sudo chmod a+x /usr/local/bin/install-marketplace-extension
 
 RUN adduser --gecos '' --disabled-password coder && \
 	echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
@@ -44,6 +49,14 @@ WORKDIR /home/coder/project
 # XXX: Workaround for GH-459 and for OpenShift compatibility.
 VOLUME [ "/home/coder/project" ]
 
+# Setup Extensions
+ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+
+# General
+RUN install-marketplace-extension eamodio gitlens
+RUN install-marketplace-estension esbenp prettier-vscode \
+    && install-marketplace-estension humao rest-client \
+    && install-marketplace-estension mgmcdermott vscode-language-babel 
 # code server default port
 EXPOSE 8443
 # running project default port

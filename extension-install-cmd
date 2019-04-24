@@ -1,0 +1,5 @@
+EXT_VENDOR=redhat
+EXT_NAME=java
+EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
