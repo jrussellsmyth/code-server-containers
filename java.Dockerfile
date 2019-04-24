@@ -49,8 +49,70 @@ VOLUME [ "/home/coder/project" ]
 # language specific configuration
 
 # language specific extensions extensions
-RUN code-server --install-extension vscjava.vscode-java-pack \
-  && code-server --install-extension redhat.vscode-xml
+# RUN code-server --install-extension redhat.java \
+#   && code-server --install-extension vscjava.vscode-java-debug \
+#   && code-server --install-extension vscjava.vscode-java-test \
+#   && code-server --install-extension vscjava.vscode-maven
+
+  
+
+  # && code-server --install-extension vscjava.vscode-java-pack \
+  # && code-server --install-extension redhat.vscode-xml
+
+
+# Setup Java Extension
+ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+
+
+RUN sudo apt-get install -y bsdtar
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/redhat.java-latest \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension
+
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/vscjava.vscode-java-debug-latest \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension
+
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/java-test \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-test/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-test extension
+
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/maven \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-maven/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/maven extension
+
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/vscodeintellicode \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/visualstudioexptteam/vsextensions/vscodeintellicode/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/maven extension
+
+# RUN mkdir -p ${VSCODE_EXTENSIONS}/vscjava.vscode-java-dependency-latest \
+#     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-dependency/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/maven extension
+
+ENV EXT_VENDOR=redhat EXT_NAME=java EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=vscjava EXT_NAME=vscode-java-debug EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=vscjava EXT_NAME=vscode-java-test EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=vscjava EXT_NAME=vscode-maven EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=visualstudioexptteam EXT_NAME=vscodeintellicode EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=vscjava EXT_NAME=vscode-java-dependency EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+ENV EXT_VENDOR=pivotal EXT_NAME=vscode-boot-dev-pack EXT_VERSION=latest
+RUN mkdir -p ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
+
+
+
 
 # code server default port
 EXPOSE 8443
