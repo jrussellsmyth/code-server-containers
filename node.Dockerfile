@@ -52,11 +52,12 @@ VOLUME [ "/home/coder/project" ]
 # Setup Extensions
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
 
-# General
+# Generic Extensions
 RUN install-marketplace-extension eamodio gitlens
-RUN install-marketplace-estension esbenp prettier-vscode \
-    && install-marketplace-estension humao rest-client \
-    && install-marketplace-estension mgmcdermott vscode-language-babel 
+
+RUN install-marketplace-extension esbenp prettier-vscode 
+RUN install-marketplace-extension humao rest-client 
+RUN install-marketplace-extension mgmcdermott vscode-language-babel 
 # code server default port
 EXPOSE 8443
 # running project default port

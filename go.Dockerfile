@@ -87,6 +87,12 @@ ENV PATH $GOPATH/bin:$PATH
 RUN mkdir -p /home/coder/.local/share/code-server/User && chmod g+rw /home/coder/.local/share/code-server/User
 COPY ./go-resources/user-settings.json /home/coder/.local/share/code-server/User/settings.json
 
+# Setup Extensions
+ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+
+# Generic Extensions
+RUN install-marketplace-extension eamodio gitlens
+
 # language specific extensions extensions
 RUN install-marketplace-extension ms-vscode go 
 
