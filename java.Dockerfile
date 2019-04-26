@@ -38,6 +38,16 @@ RUN adduser --gecos '' --disabled-password coder && \
 
 RUN sudo usermod -aG docker coder
 
+# JAVA sources
+# see https://github.com/redhat-developer/vscode-java/issues/689#
+#
+RUN apt-get install -y openjdk-11-source
+RUN cd /usr/lib/jvm/java-11-openjdk-amd64 && rm src.zip && ln -s ../openjdk-11/lib/src.zip
+
+# Install tomcat 8 and 9
+RUN curl -JLs --retry 5 http://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.40/bin/apache-tomcat-8.5.40.tar.gz | sudo tar xzvf - -C /usr/local/lib
+RUN curl -JLs --retry 5 http://www-us.apache.org/dist/tomcat/tomcat-9/v9.0.19/bin/apache-tomcat-9.0.19.tar.gz | sudo tar xzvf - -C /usr/local/lib
+
 USER coder
 # We create first instead of just using WORKDIR as when WORKDIR creates, the user is root.
 RUN mkdir -p /home/coder/project && \
