@@ -1,0 +1,10 @@
+#!/bin/sh
+EXT_DIR=${VSCODE_EXTENSIONS:-/home/coder/.local/share/code-server/extensions}
+EXT_VENDOR=$1
+EXT_NAME=$2
+EXT_VERSION=${3:-latest}
+
+echo "fetching https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage"
+mkdir -p ${EXT_DIR}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXT_VENDOR}/vsextensions/${EXT_NAME}/${EXT_VERSION}/vspackage \
+    | bsdtar --strip-components=1 -xf - -C ${EXT_DIR}/${EXT_VENDOR}.${EXT_NAME}-${EXT_VERSION} extension
