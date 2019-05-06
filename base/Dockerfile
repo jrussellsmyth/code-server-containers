@@ -1,0 +1,70 @@
+# ============================================================================================
+# node.js development environment based on the dockerhub base node containers
+# ============================================================================================
+# BUILD WITH 
+# docker build -f node.base.Dockerfile --build-arg NODE_VERSION={version} .
+# ============================================================================================
+FROM buildpack-deps:stretch-scm
+
+#RUN apt-get update && apt-get upgrade -y && apt-get install -y openjdk-11-source
+RUN echo "YES YES YES YES"
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+	net-tools \
+	sudo \
+	dumb-init \
+	vim \
+	bzip2 \
+	unzip \
+	xz-utils \
+    apt-transport-https \
+    gnupg2 \
+    software-properties-common \
+    locales \
+    bsdtar
+
+ 
+# setup locale. this keeps bsdtar from breaking. who knew.
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+
+# docker and docker dependencies - we will need these if we want to build docker containers
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - 
+RUN sudo add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" 
+RUN sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io 
+
+
+# Get the code-server binary 
+ARG CODE_SERVER_VERSION=1.939-vsc1.33.1
+RUN curl -L https://github.com/codercom/code-server/releases/download/${CODE_SERVER_VERSION}/code-server${CODE_SERVER_VERSION}-linux-x64.tar.gz | tar xzv  -f - --strip-components=1 -C /usr/local/bin/ "code-server${CODE_SERVER_VERSION}-linux-x64/code-server"
+
+COPY ./base-resources/install-marketplace-extension /usr/local/bin/install-marketplace-extension
+RUN sudo chmod a+x /usr/local/bin/install-marketplace-extension
+
+RUN adduser --gecos '' --disabled-password coder && \
+	echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+
+RUN sudo usermod -aG docker coder
+
+USER coder
+# We create first instead of just using WORKDIR as when WORKDIR creates, the user is root.
+RUN mkdir -p /home/coder/project && \
+    chmod g+rw /home/coder/project;
+
+WORKDIR /home/coder/project
+
+# This assures we have a volume mounted even if the user forgot to do bind mount.
+# XXX: Workaround for GH-459 and for OpenShift compatibility.
+VOLUME [ "/home/coder/project" ]
+
+# Setup Extensions
+ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+
+# Generic Extensions
+RUN install-marketplace-extension eamodio gitlens
+
+# code server default port
+EXPOSE 8443
+
+ENTRYPOINT ["dumb-init", "code-server"]
